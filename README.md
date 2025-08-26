@@ -38,23 +38,19 @@
 
 克隆项目仓库：
 
-bash
-
-git clone https://github.com/shuoYun114/network-strength-monitor.git
-
-cd network-strength-monitor
+    bash
+    git clone https://github.com/shuoYun114/network-strength-monitor.git
+    cd network-strength-monitor
 
 安装Python依赖：
 
-bash
-
-pip install -r requirements.txt
+    bash
+    pip install -r requirements.txt
 
 启动服务器：
 
-bash
-
-python server/app.py
+    bash
+    python server/app.py
 
 打开浏览器访问 http://localhost:5000 查看监控界面
 
