@@ -60,10 +60,8 @@ python server/app.py
 
 可选配置：修改服务器监听地址和端口（编辑 server/app.py）：
 
-python
-
-if __name__ == '__main__':
-
+    python
+    if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)  # 允许远程访问
 
 # 手机端设置
