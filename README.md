@@ -1,12 +1,6 @@
 📶 手机网络强度监测系统
 一个用于实时监测手机网络信号强度并通过网页可视化展示的完整解决方案。该系统由手机端数据采集模块和服务器端数据展示模块组成，支持多种网络类型和信号强度获取方式。
 
-https://img.shields.io/badge/python-3.6%252B-blue
-https://img.shields.io/badge/flask-2.0%252B-green
-https://img.shields.io/badge/termux-api-0.50%252B-orange
-https://img.shields.io/badge/license-MIT-yellow
-https://img.shields.io/badge/platform-Android%2520%257C%2520Windows%2520%257C%2520macOS%2520%257C%2520Linux-lightgrey
-
 ✨ 功能特性
 <div align="center">
 功能	描述
@@ -19,13 +13,6 @@ https://img.shields.io/badge/platform-Android%2520%257C%2520Windows%2520%257C%25
 📋 统计信息	显示最大、最小和平均信号强度等统计指标
 🔧 容错机制	多种信号获取方法，支持优雅降级
 </div>
-🏗 系统架构
-图表
-代码
-graph TD
-    A[移动设备<br>Android + Termux] -->|HTTP POST/JSON| B[服务器端<br>Flask + Chart.js]
-    B -->|WebSocket/HTTP| C[网页客户端<br>实时可视化界面]
-    B --> D[(数据存储<br>JSON文件)]
 📦 安装与部署
 前置要求
 🐍 Python 3.6 或更高版本
@@ -55,7 +42,9 @@ python server/app.py
 python
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)  # 允许远程访问
+
 手机端设置
+
 在Android设备上安装所需应用：
 
 Termux (F-Droid/GitHub版本)
@@ -68,43 +57,31 @@ bash
 pkg update && pkg upgrade
 pkg install python termux-api
 pip install requests
+
 将手机端脚本传输到手机：
 
 bash
 # 通过SCP或ADB将mobile_client.py传输到手机
 scp mobile/mobile_client.py user@手机IP:/path/to/script/
 修改脚本中的服务器地址：
-
-python
 # 编辑mobile_client.py，将SERVER_URL改为您的服务器IP
 SERVER_URL = "http://192.168.1.100:5000/update"  # 示例IP，请修改
+
 运行数据采集脚本：
 
 bash
 python mobile_client.py
+
 授予Termux必要权限：
 
 首次运行时脚本会提示权限请求
 
 或在Android设置中手动为Termux授予位置权限
 
-📁 项目结构
-text
-network-strength-monitor/
-├── server/                 # 服务器端代码
-│   ├── app.py             # Flask服务器主程序
-│   ├── network_data.json  # 数据存储文件(自动生成)
-│   └── templates/         # 网页模板目录
-│       └── index.html     # 主监控页面
-├── mobile/                # 手机端代码
-│   └── mobile_client.py   # 手机数据采集程序
-├── docs/                  # 文档资料(可选)
-├── requirements.txt       # Python依赖列表
-├── .gitignore            # Git忽略规则
-├── LICENSE               # 许可证文件
-└── README.md             # 项目说明文件
 ⚙️ 配置说明
+
 服务器配置选项
+
 服务器端支持以下配置选项（通过修改 server/app.py）：
 
 端口设置：默认使用5000端口
@@ -116,6 +93,7 @@ network-strength-monitor/
 远程访问：设置 host='0.0.0.0' 允许远程连接
 
 手机端配置选项
+
 手机端支持以下配置选项（通过修改 mobile/mobile_client.py）：
 
 数据发送间隔：默认10秒采集一次数据
@@ -148,10 +126,15 @@ network-strength-monitor/
 常见问题及解决方案
 问题	解决方案
 无法获取网络信号数据	确保已安装Termux:API应用，检查是否授予了位置权限，尝试重启Termux应用
+
 手机端无法连接到服务器	确认服务器IP地址正确，检查防火墙设置，确保5000端口开放，验证手机和服务器在同一网络
+
 网页无法显示或加载缓慢	检查网络连接，确保设备可以访问互联网（需要加载Chart.js）
+
 Termux命令执行超时	尝试增加超时时间（修改mobile_client.py中的timeout参数），检查Termux:API应用是否正常运行
+
 获取帮助
+
 如果您遇到其他问题，可以通过以下方式获取帮助：
 
 查看 Wiki页面
