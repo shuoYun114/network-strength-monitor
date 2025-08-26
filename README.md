@@ -74,33 +74,28 @@ Termux:API (F-Droid/GitHub版本)
 
 在Termux中执行以下命令安装依赖：
 
-bash
-
-pkg update && pkg upgrade
-
-pkg install python termux-api
-
-pip install requests
+    bash
+    pkg update && pkg upgrade
+    pkg install python termux-api
+    pip install requests
 
 将手机端脚本传输到手机：
 
-bash
-
 # 通过SCP或ADB将mobile_client.py传输到手机
 
-scp mobile/mobile_client.py user@手机IP:/path/to/script/
+    bash
+    scp mobile/mobile_client.py user@手机IP:/path/to/script/
 
 # 修改脚本中的服务器地址：
 
 编辑mobile_client.py，将SERVER_URL改为您的服务器IP
 
-SERVER_URL = "http://192.168.1.100:5000/update"  # 示例IP，请修改
+    SERVER_URL = "http://192.168.1.100:5000/update"  # 示例IP，请修改
 
 运行数据采集脚本：
 
-bash
-
-python mobile_client.py
+    bash
+    python mobile_client.py
 
 授予Termux必要权限：
 
@@ -135,9 +130,13 @@ python mobile_client.py
 超时设置：网络请求超时时间可调整
 
 # 🚀 使用方法
-启动服务器：在服务器上运行 python server/app.py
+启动服务器：在服务器上运行 
+    python server/app.py
 
-启动数据采集：在手机上运行 python mobile_client.py，随后即可将Termux退至后台（因为放在前台数据会不精确）
+启动数据采集：在手机上运行 
+    python mobile_client.py
+随后即可将Termux退至后台（因为放在前台数据会不精确）
+
 
 查看监控界面：在浏览器中打开 http://服务器IP:5000
 
