@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手机网络强度监测</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .status {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .strength-display {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .strength-value {
+            font-size: 48px;
+            color: #4CAF50;
+        }
+        .network-info {
+            text-align: center;
+            margin: 10px 0;
+            color: #666;
+        }
+        .last-update {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .stat-item {
+            text-align: center;
+            margin: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            min-width: 100px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>手机网络强度监测</h1>
+        
+        <div class="status">
+            <div class="strength-display">
+                <div>网络强度</div>
+                <div class="strength-value" id="strength-value">0</div>
+                <div>dBm</div>
+            </div>
+        </div>
+        
+        <div class="network-info">
+            网络类型: <span id="network-type">未知</span>
+        </div>
+        
+        <div class="last-update">
+            最后更新: <span id="last-update">暂无数据</span>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="max-strength">-60</div>
+                <div class="stat-label">最强信号</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="min-strength">-120</div>
+                <div class="stat-label">最弱信号</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="avg-strength">0</div>
+                <div class="stat-label">平均强度</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="update-count">0</div>
+                <div class="stat-label">更新次数</div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <canvas id="strength-chart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // 初始化图表
+        const ctx = document.getElementById('strength-chart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '网络强度 (dBm)',
+                    data: [],
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        reverse: true,
+                        suggestedMin: -120,
+                        suggestedMax: -50
+                    }
+                }
+            }
+        });
+        
+        // 更新页面数据
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('strength-value').textContent = data.strength;
+                    document.getElementById('network-type').textContent = data.network_type;
+                    document.getElementById('last-update').textContent = data.last_update || '暂无数据';
+                    
+                    // 更新统计信息
+                    if (data.stats) {
+                        document.getElementById('max-strength').textContent = data.stats.max_strength;
+                        document.getElementById('min-strength').textContent = data.stats.min_strength;
+                        document.getElementById('avg-strength').textContent = Math.round(data.stats.avg_strength);
+                        document.getElementById('update-count').textContent = data.stats.update_count;
+                    }
+                    
+                    // 更新图表
+                    if (data.history && data.history.length > 0) {
+                        const labels = data.history.map(item => {
+                            const date = new Date(item.time);
+                            return date.toLocaleTimeString();
+                        });
+                        const strengths = data.history.map(item => item.strength);
+                        
+                        chart.data.labels = labels;
+                        chart.data.datasets[0].data = strengths;
+                        chart.update();
+                    }
+                })
+                .catch(error => console.error('获取数据失败:', error));
+        }
+        
+        // 初始加载数据
+        updateData();
+        
+        // 每5秒更新一次数据
+        setInterval(updateData, 5000);
+    </script>
+</body>
+</html>
